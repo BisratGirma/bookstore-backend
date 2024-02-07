@@ -32,7 +32,7 @@ export async function updateBook(id: number, book: Book) {
 }
 
 // Helper function to execute a query and release the connection
-async function executeQuery(query, params) {
+async function executeQuery(query: any, params: any) {
   const client = await pool.connect();
 
   try {
@@ -43,18 +43,53 @@ async function executeQuery(query, params) {
 }
 
 // get paginated documnets from db
-export async function getPaginatedDocuments(page = 1, itemsPerPage = 10) {
+export async function getPaginatedDocuments(
+  page = 1,
+  itemsPerPage = 10,
+  search = "",
+  minPrice = 0,
+  maxPrice = Infinity
+) {
   const offset = (page - 1) * itemsPerPage;
 
   const client = await pool.connect();
 
   try {
+    // Build the query and parameters based on the search and filter criteria
+    let query = "SELECT * FROM documents";
+    let countQuery = "SELECT COUNT(*) FROM documents";
+    let params = [];
+    let whereClause = "";
+
+    if (search) {
+      whereClause += " WHERE (title ILIKE $1 OR writer ILIKE $1)";
+      params.push(`%${search}%`);
+    }
+
+    if (minPrice > 0) {
+      // Use >= operator to filter by minimum price
+      whereClause += whereClause
+        ? " AND (price >= $2)"
+        : " WHERE (price >= $1)";
+      params.push(minPrice);
+    }
+
+    if (maxPrice < Infinity) {
+      // Use <= operator to filter by maximum price
+      whereClause += whereClause
+        ? " AND (price <= $3)"
+        : " WHERE (price <= $1)";
+      params.push(maxPrice);
+    }
+
+    // Append the where clause and the limit and offset clauses to the query
+    query += whereClause + " LIMIT $4 OFFSET $5";
+    countQuery += whereClause;
+    params.push(itemsPerPage, offset);
+
     const [countResult, documentsResult] = await Promise.all([
-      client.query("SELECT COUNT(*) FROM documents"),
-      client.query("SELECT * FROM documents LIMIT $1 OFFSET $2", [
-        itemsPerPage,
-        offset,
-      ]),
+      client.query(countQuery, params),
+      client.query(query, params),
     ]);
 
     const totalCount = parseInt(countResult.rows[0].count);
@@ -70,7 +105,7 @@ export async function getPaginatedDocuments(page = 1, itemsPerPage = 10) {
       totalCount,
       totalPages,
     };
-  } catch (err) {
+  } catch (err: any) {
     throw err.message;
   } finally {
     client.release();
