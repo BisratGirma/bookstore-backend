@@ -4,7 +4,8 @@
   "description": "a backend service for bookstore app",
   "main": "index.js",
   "scripts": {
-    "dev": "npx tsc index.ts && node dist/index.js"
+    "dev": "npx ts-node src/index.ts",
+    "start": "npx tsc src/index.ts && node dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -20,7 +21,8 @@
     "@types/express": "^4.17.21",
     "@types/pg": "^8.11.0",
     "express": "^4.18.2",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "typescript": "^5.3.3"
