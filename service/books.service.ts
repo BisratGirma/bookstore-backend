@@ -1,15 +1,19 @@
-// services/book.service.ts
+import { getBook } from "../repository/book.repository";
 
-import { Book } from "../entity/books.model";
+export function getSingleBook(id: string) {
+  if (!id) throw new Error("id is required");
 
-export class BookService {
-  constructor(private dataAccess: DataAccess) {}
+  if (isNaN(Number(id))) throw new Error("id must be a number");
 
-  async getBook(id: number): Promise<Book> {
-    return this.dataAccess.getBook(id);
-  }
+  if (Number(id) < 0) throw new Error("id must be a positive number");
 
-  async createBook(book: Book) {
-    return this.dataAccess.createBook(book);
-  }
+  if (Number(id) > 999999) throw new Error("id must be less than 1000000");
+
+  return getBook(Number(id))
+    .then((book) => {
+      return book;
+    })
+    .catch((err) => {
+      throw err;
+    });
 }
