@@ -9,6 +9,7 @@ import {
 import { Request, Response, NextFunction } from "express";
 
 const errorResponse = (error: any) => {
+  console.log("error: ", error);
   return {
     error: true,
     message: error.message,

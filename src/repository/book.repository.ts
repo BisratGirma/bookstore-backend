@@ -17,9 +17,11 @@ export async function createBook(book: Book) {
     [book.title, book.writer, book.coverImage, book.point, book.tag]
   );
 
-  console.log("result: ", result);
-
-  return result.rows[0];
+  if (result.rowCount && result.rowCount >= 1)
+    return { message: "item created!" };
+  else {
+    throw new Error("item not created");
+  }
 }
 
 // get book by id
@@ -28,20 +30,35 @@ export async function getBook(id: number) {
 
   const book = result.rows[0];
 
-  return book;
+  if (book) return book;
+  else {
+    throw new Error("no item found");
+  }
 }
 
 // Delete a book by id
 export async function deleteBook(id: number) {
-  await executeQuery("DELETE FROM books WHERE id=$1", [id]);
+  const result = await executeQuery("DELETE FROM books WHERE id=$1", [id]);
+
+  if (result.rowCount && result.rowCount >= 1)
+    return { message: "item deleted successfully" };
+  else {
+    throw new Error("item not found");
+  }
 }
 
 // Update a book by id
 export async function updateBook(id: number, book: Book) {
-  await executeQuery(
+  const result = await executeQuery(
     "UPDATE books SET title=$1, writer=$2, coverImage=$3, point=$4, tag=$5 WHERE id=$6",
     [book.title, book.writer, book.coverImage, book.point, book.tag, id]
   );
+
+  if (result.rowCount && result.rowCount >= 1)
+    return { message: "item updated successfully" };
+  else {
+    throw new Error("item not found");
+  }
 }
 
 // Helper function to execute a query and release the connection
@@ -109,7 +126,7 @@ export async function getPaginatedDocuments(
       countParams.push(maxPrice);
     }
 
-    // Append the where clause and the limit and offset clauses to the query
+    // Append the where clauses and the limit and offset clauses to the query
     countQuery += whereClauseCount;
     query += whereClause + ` LIMIT $${++queryNth} OFFSET $${++queryNth}`;
     queryParams.push(itemsPerPage, offset);

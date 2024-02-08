@@ -19,8 +19,8 @@ export async function getSingleBook(id: string) {
   try {
     const book = await getBook(Number(id));
     return book;
-  } catch (err) {
-    throw err;
+  } catch (err: any) {
+    throw new Error(err.message);
   }
 }
 
