@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, Response } from "express";
+import cors from "cors";
 import db from "./repository/db";
 import routes from "./controller";
 
@@ -6,6 +7,8 @@ db.connect()
   .then(() => console.log("Database connected"))
   .catch((err) => console.log("database connection error: " + err.message));
 const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
