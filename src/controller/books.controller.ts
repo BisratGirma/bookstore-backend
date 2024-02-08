@@ -8,6 +8,15 @@ import {
 
 import { Request, Response, NextFunction } from "express";
 
+const errorResponse = (error: any) => {
+  return {
+    error: true,
+    message: error.message,
+    data: null,
+    status: error.status ?? 400,
+  };
+};
+
 export async function respondToGetSingleBook(
   req: Request,
   res: Response,
@@ -18,9 +27,8 @@ export async function respondToGetSingleBook(
 
     res.status(200).json(book);
     return;
-    return;
-  } catch (error) {
-    next(error);
+  } catch (error: any) {
+    res.status(error.status ?? 400).json(errorResponse(error));
   }
 }
 
@@ -61,8 +69,8 @@ export async function respondToCreateBook(
 
     res.status(201).json(book);
     return;
-  } catch (error) {
-    next(error);
+  } catch (error: any) {
+    res.status(error.status ?? 400).json(errorResponse(error));
   }
 }
 
@@ -79,8 +87,8 @@ export async function respondToUpdateBook(
 
     res.status(200).json(book);
     return;
-  } catch (error) {
-    next(error);
+  } catch (error: any) {
+    res.status(error.status ?? 400).json(errorResponse(error));
   }
 }
 
@@ -96,8 +104,8 @@ export async function respondToDeleteBook(
 
     res.status(200).json(book);
     return;
-  } catch (error) {
-    next(error);
+  } catch (error: any) {
+    res.status(error.status ?? 400).json(errorResponse(error));
   }
 }
 

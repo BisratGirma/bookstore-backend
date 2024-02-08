@@ -11,6 +11,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
+app.use(routes);
+
 app.use(function errorHandler(
   err: Error,
   req: Request,
@@ -18,12 +20,14 @@ app.use(function errorHandler(
   next: NextFunction
 ): void {
   res.status(500).json({
-    error: "Internal Server Error",
+    error:
+      process.env.NODE_ENV === "production"
+        ? "Internal Server Error"
+        : err.message,
   });
   return;
 });
-app.use(routes);
 
-app.listen(3000, () => {
-  console.log("Server started on port 3000");
+app.listen(8000, () => {
+  console.log("Server started on port 8000");
 });

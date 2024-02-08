@@ -3,10 +3,23 @@ import Book from "../entity/books.model";
 
 // create book
 export async function createBook(book: Book) {
-  await executeQuery(
-    "INSERT INTO books(title, writer, coverImage, point, tag) VALUES($1, $2, $3, $4, $5)",
+  await executeQuery(`CREATE TABLE IF NOT EXISTS books (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    writer VARCHAR(255) NOT NULL,
+    coverImage VARCHAR(255),
+    point INTEGER,
+    tag VARCHAR(255)
+  )`);
+
+  const result = await executeQuery(
+    `INSERT INTO books(title, writer, coverImage, point, tag) VALUES($1, $2, $3, $4, $5);`,
     [book.title, book.writer, book.coverImage, book.point, book.tag]
   );
+
+  console.log("result: ", result);
+
+  return result.rows[0];
 }
 
 // get book by id
@@ -32,7 +45,7 @@ export async function updateBook(id: number, book: Book) {
 }
 
 // Helper function to execute a query and release the connection
-async function executeQuery(query: any, params: any) {
+async function executeQuery(query: any, params?: any) {
   const client = await pool.connect();
 
   try {
@@ -42,7 +55,7 @@ async function executeQuery(query: any, params: any) {
   }
 }
 
-// get paginated documnets from db
+// get paginate book
 export async function getPaginatedDocuments(
   page = 1,
   itemsPerPage = 10,
@@ -56,40 +69,54 @@ export async function getPaginatedDocuments(
 
   try {
     // Build the query and parameters based on the search and filter criteria
-    let query = "SELECT * FROM documents";
-    let countQuery = "SELECT COUNT(*) FROM documents";
-    let params = [];
+    let query = "SELECT * FROM books";
+    let countQuery = "SELECT COUNT(*) FROM books";
+    let queryNth = 0;
+    let countQueryNth = 0;
+    let queryParams = [];
+    let countParams = [];
     let whereClause = "";
+    let whereClauseCount = "";
 
     if (search) {
-      whereClause += " WHERE (title ILIKE $1 OR writer ILIKE $1)";
-      params.push(`%${search}%`);
+      whereClauseCount += ` WHERE (title ILIKE $${++countQueryNth} OR writer ILIKE $${++countQueryNth})`;
+      whereClause += ` WHERE (title ILIKE $${++queryNth} OR writer ILIKE $${++queryNth})`;
+      queryParams.push(`%${search}%`);
+      countParams.push(`%${search}%`);
     }
 
     if (minPrice > 0) {
       // Use >= operator to filter by minimum price
+      whereClauseCount += whereClauseCount
+        ? ` AND (point >= $${++countQueryNth})`
+        : ` WHERE (point >= $${++countQueryNth})`;
       whereClause += whereClause
-        ? " AND (price >= $2)"
-        : " WHERE (price >= $1)";
-      params.push(minPrice);
+        ? ` AND (point >= $${++queryNth})`
+        : ` WHERE (point >= $${++queryNth})`;
+      queryParams.push(minPrice);
+      countParams.push(minPrice);
     }
 
     if (maxPrice < Infinity) {
       // Use <= operator to filter by maximum price
+      whereClauseCount += whereClauseCount
+        ? ` AND (point <= $${++countQueryNth})`
+        : ` WHERE (point <= $${++countQueryNth})`;
       whereClause += whereClause
-        ? " AND (price <= $3)"
-        : " WHERE (price <= $1)";
-      params.push(maxPrice);
+        ? ` AND (point <= $${++queryNth})`
+        : ` WHERE (point <= $${++queryNth})`;
+      queryParams.push(maxPrice);
+      countParams.push(maxPrice);
     }
 
     // Append the where clause and the limit and offset clauses to the query
-    query += whereClause + " LIMIT $4 OFFSET $5";
-    countQuery += whereClause;
-    params.push(itemsPerPage, offset);
+    countQuery += whereClauseCount;
+    query += whereClause + ` LIMIT $${++queryNth} OFFSET $${++queryNth}`;
+    queryParams.push(itemsPerPage, offset);
 
     const [countResult, documentsResult] = await Promise.all([
-      client.query(countQuery, params),
-      client.query(query, params),
+      client.query(countQuery, countParams),
+      client.query(query, queryParams),
     ]);
 
     const totalCount = parseInt(countResult.rows[0].count);
@@ -106,6 +133,7 @@ export async function getPaginatedDocuments(
       totalPages,
     };
   } catch (err: any) {
+    console.log(err.message);
     throw err.message;
   } finally {
     client.release();

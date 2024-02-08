@@ -4,6 +4,7 @@
   "description": "a backend service for bookstore app",
   "main": "index.js",
   "scripts": {
+    "nodemon": "nodemon",
     "dev": "npx ts-node src/index.ts",
     "start": "npx tsc src/index.ts && node dist/index.js"
   },
@@ -22,6 +23,7 @@
     "@types/pg": "^8.11.0",
     "dotenv": "^16.4.1",
     "express": "^4.18.2",
+    "nodemon": "^3.0.3",
     "pg": "^8.11.3",
     "ts-node": "^10.9.2"
   },

@@ -67,7 +67,8 @@ export async function getBooks(
     );
     return books;
   } catch (err) {
-    throw err;
+    console.log("err: ", err);
+    throw new Error("Internal server error");
   }
 }
 
