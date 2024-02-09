@@ -3,6 +3,9 @@ import booksController from "./books.controller";
 
 const router = Router();
 
+// Get multiple books with pagination
+router.get("/api/books/paginate", booksController.respondToGetBooks);
+
 /**
  * @swagger
  * /{id}:
@@ -85,10 +88,7 @@ const router = Router();
  *           description: Description of the internal server error
  *           example: "Internal server Error"
  */
-router.get("/:id", booksController.respondToGetSingleBook);
-
-// Get multiple books with pagination
-router.get("/", booksController.respondToGetBooks);
+router.get("/api/books/:id", booksController.respondToGetSingleBook);
 
 /**
  * @swagger
@@ -183,7 +183,7 @@ router.get("/", booksController.respondToGetBooks);
  *           description: Description of the internal server error
  *           example: "Internal server Error"
  */
-router.post("/", booksController.respondToCreateBook);
+router.post("/api/books", booksController.respondToCreateBook);
 
 /**
  * @swagger
@@ -274,7 +274,7 @@ router.post("/", booksController.respondToCreateBook);
  *           description: Description of the internal server error
  *           example: "Internal server Error"
  */
-router.put("/:id", booksController.respondToUpdateBook);
+router.put("/api/books/:id", booksController.respondToUpdateBook);
 
 /**
  * @swagger
@@ -344,6 +344,6 @@ router.put("/:id", booksController.respondToUpdateBook);
  *           description: Description of the internal server error
  *           example: "Internal server Error"
  */
-router.delete("/:id", booksController.respondToDeleteBook);
+router.delete("/api/books/:id", booksController.respondToDeleteBook);
 
 export default router;

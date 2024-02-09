@@ -96,8 +96,8 @@ export async function getPaginatedDocuments(
     let whereClauseCount = "";
 
     if (search) {
-      whereClauseCount += ` WHERE (title ILIKE $${++countQueryNth} OR writer ILIKE $${++countQueryNth})`;
-      whereClause += ` WHERE (title ILIKE $${++queryNth} OR writer ILIKE $${++queryNth})`;
+      whereClauseCount += ` WHERE (title ILIKE $${++countQueryNth} OR writer ILIKE $${countQueryNth})`;
+      whereClause += ` WHERE (title ILIKE $${++queryNth} OR writer ILIKE $${queryNth})`;
       queryParams.push(`%${search}%`);
       countParams.push(`%${search}%`);
     }
@@ -130,6 +130,11 @@ export async function getPaginatedDocuments(
     countQuery += whereClauseCount;
     query += whereClause + ` LIMIT $${++queryNth} OFFSET $${++queryNth}`;
     queryParams.push(itemsPerPage, offset);
+
+    console.log("auery: ", countQuery);
+    console.log("params: ", countParams);
+    console.log("auery: ", query);
+    console.log("params: ", queryParams);
 
     const [countResult, documentsResult] = await Promise.all([
       client.query(countQuery, countParams),
