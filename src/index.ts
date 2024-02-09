@@ -2,11 +2,14 @@ import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import db from "./repository/db";
 import routes from "./controller";
+import { setupSwagger } from "./swagger";
 
 db.connect()
   .then(() => console.log("Database connected"))
   .catch((err) => console.log("database connection error: " + err.message));
 const app = express();
+
+setupSwagger(app);
 
 app.use(cors());
 
