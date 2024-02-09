@@ -3,7 +3,105 @@ import booksController from "./books.controller";
 
 const router = Router();
 
-// Get multiple books with pagination
+/**
+ * @swagger
+ * /api/books/paginate:
+ *   get:
+ *     summary: Search and paginate books
+ *     description: Search for books with optional filters and pagination parameters.
+ *     tags: [Books]
+ *     parameters:
+ *       - in: query
+ *         name: minPrice
+ *         description: Minimum price (optional)
+ *         type: number
+ *         format: float
+ *       - in: query
+ *         name: maxPrice
+ *         description: Maximum price (optional)
+ *         type: number
+ *         format: float
+ *       - in: query
+ *         name: search
+ *         description: Search term (optional)
+ *         type: string
+ *       - in: query
+ *         name: page
+ *         description: Page number (optional, default: 1)
+ *         type: integer
+ *         default: 1
+ *       - in: query
+ *         name: itemsPerPage
+ *         description: Number of items per page (optional, default: 10)
+ *         type: integer
+ *         default: 10
+ *     responses:
+ *       '200':
+ *         description: Successful search results
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 documents:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Book'
+ *                 page:
+ *                   type: integer
+ *                   description: Current page number
+ *                 itemsPerPage:
+ *                   type: integer
+ *                   description: Number of items per page
+ *                 totalCount:
+ *                   type: integer
+ *                   description: Total number of results
+ *                 totalPages:
+ *                   type: integer
+ *                   description: Total number of pages
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/InternalError'
+ * components:
+ *   schemas:
+ *     Book:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: Unique identifier of the book
+ *           example: 4
+ *         title:
+ *           type: string
+ *           description: Title of the book
+ *           example: "The New Order"
+ *         writer:
+ *           type: string
+ *           description: Writer of the book
+ *           example: "John Hopkins"
+ *         coverimage:
+ *           type: string
+ *           description: URL of the cover image
+ *           example: "https://images-na.ssl-images-amazon.com/images/I/51Ga5GuElyL._AC_SX184_.jpg"
+ *         point:
+ *           type: integer
+ *           description: Points associated with the book (optional)
+ *           example: 500
+ *         tag:
+ *           type: string
+ *           description: Tags associated with the book in JSON format (optional)
+ *           example: "{\"history\",\"biography\"}"
+ *     InternalError:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           description: Description of the internal server error
+ *           example: "Internal server Error"
+ */
 router.get("/api/books/paginate", booksController.respondToGetBooks);
 
 /**
