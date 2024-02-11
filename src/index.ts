@@ -3,6 +3,7 @@ import cors from "cors";
 import db from "./repository/db";
 import routes from "./controller";
 import { setupSwagger } from "./swagger";
+import authenticateToken from "./controller/authenticater.middleware";
 
 db.connect()
   .then(() => console.log("Database connected"))
@@ -16,6 +17,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
+
+authenticateToken.unless({
+  path: ["/api/user/login", "/api/user/register", "/api/books"],
+});
 
 app.use(routes);
 

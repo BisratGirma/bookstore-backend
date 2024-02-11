@@ -17,6 +17,8 @@ export async function login(req: Request, res: Response) {
   try {
     const { email, password } = req.body;
 
+    console.log(email, password);
+
     if (!isEmail(email) || typeof password !== "string") {
       return res.status(401).json({ message: "Invalid credentials" });
     }
