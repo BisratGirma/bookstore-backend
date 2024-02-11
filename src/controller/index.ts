@@ -555,8 +555,154 @@ router.put("/api/books/:id", booksController.respondToUpdateBook);
 router.delete("/api/books/:id", booksController.respondToDeleteBook);
 
 // Order API's
+
+/**
+ * @swagger
+ * /api/order/{orderId}:
+ *   post:
+ *     summary: Create a new order
+ *     tags: ['Orders']
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         required: true
+ *         type: integer
+ *         description: Unique identifier for the book to be ordered
+ *         example: 10
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               # Replace with actual order properties (e.g., user_id, quantity)
+ *             required:
+ *               - # Your required properties here
+ *     responses:
+ *       '200':
+ *         description: Order created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Success message
+ *                   example: "Order created"
+ *                 order:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       description: Order ID
+ *                       example: 7
+ *                     bookid:
+ *                       type: integer
+ *                       description: Book ID
+ *                       example: 10
+ *                     userid:
+ *                       type: integer
+ *                       description: User ID
+ *                       example: 3
+ *       '400':
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Error"
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Error"
+ *       '403':
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Error"
+ */
 router.post("/api/order/:bookID", order);
 
+/**
+ * @swagger
+ * /api/order/paginate:
+ *   get:
+ *     summary: Get a paginated list of orders
+ *     tags: [Order]
+ *     parameters:
+ *       - in: header
+ *         name: Authorization
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The bearer token for authentication
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         default: 1
+ *         description: The page number to fetch
+ *       - in: query
+ *         name: itemsPerPage
+ *         schema:
+ *           type: integer
+ *         default: 10
+ *         description: The number of items per page
+ *     responses:
+ *       200:
+ *         description: A successful response with the order details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: order created
+ *                 order:
+ *                   type: object
+ *                   properties:
+ *                     documents:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                             example: 3
+ *                           bookid:
+ *                             type: integer
+ *                             example: 7
+ *                           userid:
+ *                             type: integer
+ *                             example: 3
+ *                     page:
+ *                       type: integer
+ *                       example: 1
+ *                     itemsPerPage:
+ *                       type: integer
+ *                       example: 10
+ *                     totalCount:
+ *                       type: integer
+ *                       example: 5
+ *                     totalPages:
+ *                       type: integer
+ *                       example: 1
+ *       500:
+ *         description: An internal server error occurred
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: internal server error
+ */
 router.get("/api/order/paginate", myOrders);
 
 router.delete("/api/order/", cancelOrder);
