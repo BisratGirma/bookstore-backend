@@ -18,9 +18,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-authenticateToken.unless({
-  path: ["/api/user/login", "/api/user/register", "/api/books"],
-});
+app.use(
+  authenticateToken.unless({
+    path: ["/api/user/login", "/api/user/", "/api/books"],
+  })
+);
 
 app.use(routes);
 

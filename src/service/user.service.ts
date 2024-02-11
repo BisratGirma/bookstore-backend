@@ -2,6 +2,7 @@ import UserAll from "../entity/user.model";
 import UserRepository from "../repository/user.repository";
 import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
+import dotenv from "dotenv";
 
 type User = Omit<UserAll, "id">;
 
@@ -30,8 +31,9 @@ export async function login(email: string, password: string): Promise<string> {
 }
 
 function generateToken(user: UserAll): string {
+  dotenv.config();
   const payload = { id: user.id, email: user.email };
-  return jwt.sign(payload, process.env.JWT_SECRET ?? "dalf", {
+  return jwt.sign(payload, process.env.JWT_Key ?? "dalf", {
     expiresIn: "2h",
   });
 }

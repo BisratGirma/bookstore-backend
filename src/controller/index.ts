@@ -1,6 +1,7 @@
 import { Router } from "express";
 import booksController from "./books.controller";
 import { login, register } from "./authentication.controller";
+import { order, cancelOrder, myOrders } from "./order.controller";
 
 const router = Router();
 
@@ -552,5 +553,12 @@ router.put("/api/books/:id", booksController.respondToUpdateBook);
  *           example: "Internal server Error"
  */
 router.delete("/api/books/:id", booksController.respondToDeleteBook);
+
+// Order API's
+router.post("/api/order/:bookID", order);
+
+router.get("/api/order/paginate", myOrders);
+
+router.delete("/api/order/", cancelOrder);
 
 export default router;

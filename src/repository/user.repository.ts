@@ -6,15 +6,16 @@ export async function createUser(user: Omit<User, "id">): Promise<User> {
   await pool.query(`CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
         email VARCHAR(255) NOT NULL,
-        password VARCHAR(255) NOT NULL
+        password VARCHAR(255) NOT NULL,
+        point INT DEFAULT 100
       )`);
   // Hash password before saving
   const hashedPassword = await bcryptjs.hash(user.password, 10);
   user.password = hashedPassword;
 
   const { rows } = await pool.query(
-    "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
-    [user.email, user.password]
+    "INSERT INTO users (email, password, point) VALUES ($1, $2, $3) RETURNING *",
+    [user.email, user.password, user.point ?? 100]
   );
 
   return rows[0];
