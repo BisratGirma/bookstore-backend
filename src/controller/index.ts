@@ -1,7 +1,116 @@
 import { Router } from "express";
 import booksController from "./books.controller";
+import { login, register } from "./authentication.controller";
 
 const router = Router();
+
+/**
+ * @swagger
+ * /api/user:
+ *   post:
+ *     summary: Register a new user
+ *     tags: ['Auth']
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: 'email'
+ *                 description: User's email address
+ *                 example: 'john.doe@example.com'
+ *               password:
+ *                 type: string
+ *                 description: User's password
+ *                 minLength: 6
+ *                 example: 'strong_password'
+ *     responses:
+ *       '201':
+ *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Success message
+ *                   example: "User registered successfully"
+ *                 token:
+ *                   type: string
+ *                   description: JWT token for authentication
+ *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *       '400':
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Error"
+ *       '409':
+ *         description: Email already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Error"
+ */
+router.post("/api/user/", register);
+
+/**
+ * @swagger
+ * /api/login:
+ *   post:
+ *     summary: Register a new user
+ *     tags: ['Auth']
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: 'email'
+ *                 description: User's email address
+ *                 example: 'john.doe@example.com'
+ *               password:
+ *                 type: string
+ *                 description: User's password
+ *                 minLength: 6
+ *                 example: 'strong_password'
+ *     responses:
+ *       '201':
+ *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Success message
+ *                   example: "User registered successfully"
+ *                 token:
+ *                   type: string
+ *                   description: JWT token for authentication
+ *                   example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+ *       '400':
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Error"
+ *       '409':
+ *         description: Email already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Error"
+ */
+router.post("/api/user/login", login);
 
 /**
  * @swagger

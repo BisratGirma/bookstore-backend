@@ -1,5 +1,5 @@
-export default interface Book {
+export default interface User {
   id: number;
   password: string;
-  userID: string;
+  email: string;
 }
