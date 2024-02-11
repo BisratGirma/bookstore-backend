@@ -1,4 +1,3 @@
-import { isEmail, isNumber } from "class-validator";
 import { Request, Response } from "express";
 
 import {
@@ -21,10 +20,8 @@ export async function order(req: Request, res: Response) {
     const bookID = Number(req.params.bookID);
     const userID = req.user?.id!;
 
-    console.log(bookID, userID);
-
     if (isNaN(bookID)) {
-      return res.status(401).json({ message: "book id or user id" });
+      return res.status(401).json({ message: "not valid book id" });
     }
 
     const orderRuslt = await addBookInService({ bookID, userID });
@@ -55,13 +52,16 @@ export async function myOrders(req: Request, res: Response) {
 
 export async function cancelOrder(req: Request, res: Response) {
   try {
-    const { bookID, userID } = req.body;
+    const bookID = Number(req.params.bookID);
+    const userID = req.user?.id!;
 
-    if (!(typeof bookID === "number") || !(typeof userID !== "number")) {
-      return res.status(401).json({ message: "book id or user id" });
+    if (isNaN(bookID)) {
+      return res.status(401).json({ message: "not valid book id" });
     }
 
     const cancelOrder = await deleteBookInService({ bookID, userID });
+
+    console.log("canceled order: ", cancelOrder);
 
     res.status(200).json({ message: "order canceled" });
     return;

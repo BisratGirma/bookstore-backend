@@ -705,6 +705,47 @@ router.post("/api/order/:bookID", order);
  */
 router.get("/api/order/paginate", myOrders);
 
-router.delete("/api/order/", cancelOrder);
+/**
+ * @swagger
+ * /api/order/{id}:
+ *   delete:
+ *     summary: Cancel an order by id
+ *     tags: [Order]
+ *     parameters:
+ *       - in: header
+ *         name: Authorization
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The bearer token for authentication
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The id of the order to cancel
+ *     responses:
+ *       200:
+ *         description: A successful response with the order cancellation message
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: order canceled
+ *       404:
+ *         description: An error occurred if the order id is not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: order not found
+ */
+router.delete("/api/order/:bookID", cancelOrder);
 
 export default router;
