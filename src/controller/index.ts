@@ -220,7 +220,7 @@ router.get("/api/books/paginate", booksController.respondToGetBooks);
  *   get:
  *     summary: Get item with ID {id}
  *     description: Returns the item with ID {number} if it exists, otherwise returns a 400 error.
- *     tags: [Items]
+ *     tags: [Books]
  *     responses:
  *       '200':
  *         description: Successful response
@@ -304,7 +304,7 @@ router.get("/api/books/:id", booksController.respondToGetSingleBook);
  *   post:
  *     summary: Create a new item
  *     description: Creates a new item with the provided details.
- *     tags: [Items]
+ *     tags: [Books]
  *     requestBody:
  *       required: true
  *       content:
@@ -399,7 +399,7 @@ router.post("/api/books", booksController.respondToCreateBook);
  *   put:
  *     summary: Update item with ID 3
  *     description: Updates the item with ID 3 with the provided details.
- *     tags: [Items]
+ *     tags: [Books]
  *     requestBody:
  *       required: true
  *       content:
@@ -490,7 +490,7 @@ router.put("/api/books/:id", booksController.respondToUpdateBook);
  *   delete:
  *     summary: Delete item by ID
  *     description: Deletes the item with the specified ID.
- *     tags: [Items]
+ *     tags: [Books]
  *     parameters:
  *       - in: path
  *         name: id
@@ -561,7 +561,7 @@ router.delete("/api/books/:id", booksController.respondToDeleteBook);
  * /api/order/{orderId}:
  *   post:
  *     summary: Create a new order
- *     tags: ['Orders']
+ *     tags: ['Order']
  *     parameters:
  *       - in: path
  *         name: orderId
