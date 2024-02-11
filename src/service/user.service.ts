@@ -6,17 +6,22 @@ import dotenv from "dotenv";
 
 type User = Omit<UserAll, "id">;
 
-export async function register(user: User): Promise<string> {
+export async function register(
+  user: User
+): Promise<{ token: string; points: number }> {
   const existingUser = await UserRepository.getUserByEmail(user.email);
   if (existingUser) {
     throw new Error("Email already exists");
   }
 
   const newUser = await UserRepository.createUser(user);
-  return generateToken(newUser);
+  return { token: generateToken(newUser), points: user.point };
 }
 
-export async function login(email: string, password: string): Promise<string> {
+export async function login(
+  email: string,
+  password: string
+): Promise<{ token: string; points: number }> {
   const user = await UserRepository.getUserByEmail(email);
   if (!user) {
     throw new Error("Invalid email or password");
@@ -27,7 +32,7 @@ export async function login(email: string, password: string): Promise<string> {
     throw new Error("Invalid email or password");
   }
 
-  return generateToken(user);
+  return { token: generateToken(user), points: user.point };
 }
 
 function generateToken(user: UserAll): string {

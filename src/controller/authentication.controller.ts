@@ -23,7 +23,7 @@ export async function login(req: Request, res: Response) {
 
     const loginRuslt = await Auth.login(email, password);
 
-    res.status(200).json({ message: "Login successful", token: loginRuslt });
+    res.status(200).json({ message: "Login successful", user: loginRuslt });
     return;
   } catch (error: any) {
     res.status(error.status ?? 400).json(errorResponse(error));
@@ -40,7 +40,7 @@ export async function register(req: Request, res: Response) {
 
     const registerRuslt = await Auth.register({ email, password, point: 100 });
 
-    res.status(200).json({ message: "Login successful", token: registerRuslt });
+    res.status(200).json({ message: "Login successful", user: registerRuslt });
     return;
   } catch (error: any) {
     res.status(error.status ?? 400).json(errorResponse(error));
