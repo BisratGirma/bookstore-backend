@@ -5,6 +5,7 @@ import {
   deleteBookInService,
   getOrders,
 } from "../service/order.service";
+import { getPaginatedOrders } from "../repository/order.repository";
 
 const errorResponse = (error: any) => {
   return {
@@ -36,10 +37,8 @@ export async function order(req: Request, res: Response) {
 export async function myOrders(req: Request, res: Response) {
   try {
     const userID = req.user?.id!;
-    const page = Number(req.query.page) | 1;
-    const limit = Number(req.query.limit) | 10;
 
-    const orderRuslt = await getOrders(userID, page, limit);
+    const orderRuslt = await getPaginatedOrders(userID);
 
     console.log(orderRuslt);
 

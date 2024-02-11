@@ -33,43 +33,24 @@ export async function deleteOrder(order: Omit<Order, "id">): Promise<any> {
   }
 }
 
-export async function getPaginatedOrders(
-  userID: number,
-  page = 1,
-  itemsPerPage = 10
-) {
-  const offset = (page - 1) * itemsPerPage;
-
+export async function getPaginatedOrders(userID: number) {
   const client = await pool.connect();
 
   try {
     // Build the query and parameters based on the search and filter criteria
-    let query = "SELECT * FROM orders WHERE userid = $1 LIMIT $2 OFFSET $3";
-    let countQuery =
-      "SELECT COUNT(*) FROM orders WHERE userid = $1 LIMIT $2 OFFSET $3";
+    let query = `SELECT o.id, o.bookID, o.userID, b.title, b.writer, b.coverImage, b.point, b.tag
+    FROM orders o
+    JOIN books b
+    ON o.bookID = b.id
+    WHERE o.userID = $1`;
 
     // Append the where clauses and the limit and offset clauses to the query
 
-    const queryParams = [userID, itemsPerPage, offset];
+    const queryParams = [userID];
 
-    const [countResult, documentsResult] = await Promise.all([
-      client.query(countQuery, queryParams),
-      client.query(query, queryParams),
-    ]);
+    const result = await client.query(query, queryParams);
 
-    const totalCount = parseInt(countResult.rows[0].count);
-
-    const documents = documentsResult.rows;
-
-    const totalPages = Math.ceil(totalCount / itemsPerPage);
-
-    return {
-      documents,
-      page,
-      itemsPerPage,
-      totalCount,
-      totalPages,
-    };
+    return result.rows;
   } catch (err: any) {
     console.log(err.message);
     throw err.message;

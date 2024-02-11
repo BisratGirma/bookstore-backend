@@ -42,11 +42,7 @@ export async function deleteBookInService({
 
 export async function getOrders(userID: number, page: number, limit: number) {
   try {
-    const orders = await getPaginatedOrders(
-      userID,
-      Number(page),
-      Number(limit)
-    );
+    const orders = await getPaginatedOrders(userID);
     return orders;
   } catch (err) {
     console.log("err: ", err);

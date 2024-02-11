@@ -30,7 +30,6 @@ function authenticateToken(req: Request, res: Response, next: NextFunction) {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    console.log("sercet: ", secret);
     const verifyResponse = jwt.verify(token, secret);
 
     if (!verifyResponse)
@@ -40,7 +39,7 @@ function authenticateToken(req: Request, res: Response, next: NextFunction) {
     next();
   } catch (error: any) {
     console.log(error.message);
-    return res.status(401).json({ message: "auth server error" });
+    return res.status(401).json({ message: "Unauthorized!" });
   }
 }
 
